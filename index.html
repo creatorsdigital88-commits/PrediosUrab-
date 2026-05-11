@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Predios Urabá — Bienes Raíces</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '800926172904929');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=800926172904929&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -155,7 +174,7 @@ body{
 .btn:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,0.3);}
 .btn:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none;transform:none;box-shadow:none;}
 
-/* WhatsApp directo — pregunta 4 */
+/* WhatsApp directo */
 .wa-btn-direct{
   display:inline-flex;align-items:center;justify-content:center;gap:12px;
   width:100%;padding:18px;
@@ -237,7 +256,7 @@ body{
   <!-- ===== INTRO ===== -->
   <div class="screen active" id="screen-intro">
     <div class="intro-badge">Acceso exclusivo</div>
-    <div class="intro-title">Encuentra tu<br><span>propiedad ideal</span><br>en Urabá</div>
+    <div class="intro-title">Encuentra tu<br><span>propiedad ideal</span><br>en el Urabá</div>
     <p class="intro-desc">
       Responde 4 preguntas rápidas y conecta directamente con un asesor especializado.
       Solo atendemos perfiles serios de compradores e inversionistas.
@@ -342,6 +361,8 @@ function startFunnel() {
   document.getElementById('progressWrap').style.display = 'block';
   updateProgress(0);
   show('screen-q0');
+  // Pixel: inicio del embudo
+  if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: 'Inicio evaluacion' });
 }
 
 function updateProgress(step) {
@@ -365,12 +386,10 @@ function selectOpt(q, opt, isOk) {
   answers[q] = btn.textContent.replace(letra, '').trim();
   qualifies[q] = isOk;
 
-  // Preguntas 1, 2 y 3: habilitar botón continuar
   if (q < 3) {
     document.getElementById('btn-q' + q).disabled = false;
   }
 
-  // Pregunta 4: activar botón WhatsApp directo
   if (q === 3) {
     const waBtn  = document.getElementById('wa-link');
     const waNota = document.getElementById('wa-nota');
@@ -388,7 +407,16 @@ function selectOpt(q, opt, isOk) {
 
       waBtn.href    = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
       waBtn.target  = '_blank';
-      waBtn.onclick = null;
+      waBtn.onclick = function() {
+        // Pixel: lead calificado tocó WhatsApp
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'Lead', {
+            content_name: 'Lead calificado WhatsApp',
+            content_category: answers[2],
+            value: answers[3]
+          });
+        }
+      };
       waBtn.classList.add('ready');
       waNota.textContent = 'Un asesor te atenderá en menos de 2 horas hábiles.';
     } else {
@@ -409,6 +437,8 @@ function next(current) {
 }
 
 function showReject() {
+  // Pixel: descarte
+  if (typeof fbq !== 'undefined') fbq('trackCustom', 'FunnelDescarte', { pregunta: answers.filter(Boolean).length });
   document.getElementById('progressWrap').style.display = 'none';
   show('screen-reject');
 }
