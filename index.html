@@ -772,7 +772,7 @@ body{
         <span class="opt-check"></span>
       </button>
     </div>
-    <button class="btn" id="btn-q3" disabled onclick="evaluate()">VER RESULTADO →</button>
+    <button class="btn" id="btn-q3" disabled onclick="evaluate()">CONTINUAR CON UN ASESOR →</button>
   </div>
 
   <!-- ===== ÉXITO ===== -->
@@ -872,20 +872,9 @@ function evaluate() {
   if (answers[3] === null) return;
   if (!qualifies[3]) { showReject(); return; }
 
-  // Build summary
-  const html = answers.map((a, i) => `
-    <div class="summary-row">
-      <div class="summary-q">${labels[i]}</div>
-      <div class="summary-a">${a}</div>
-    </div>
-  `).join('');
-  document.getElementById('summary-content').innerHTML = html;
-
-  // WhatsApp link
-  document.getElementById('wa-link').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
-
-  document.getElementById('progressWrap').style.display = 'none';
-  show('screen-success');
+  // Va directo a WhatsApp
+  const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
+  window.open(waUrl, '_blank');
 }
 
 function showReject() {
