@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predios Urabá — Bienes Raíces</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --orange:#F97316;
+  --orange2:#FB923C;
+  --orange-dark:#C2410C;
+  --orange-glow:rgba(249,115,22,0.18);
+  --black:#0C0C0C;
+  --black2:#141414;
+  --black3:#1C1C1C;
+  --black4:#252525;
+  --white:#FAFAFA;
+  --text:#F5F0EB;
+  --text-muted:#7A7060;
+  --border:#2C2820;
+}
+
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(249,115,22,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 95% 80%, rgba(249,115,22,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 30% 30% at 5% 20%, rgba(249,115,22,0.04) 0%, transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* Corner accents like the logo */
+.corner-tl,.corner-br{
+  position:fixed;
+  width:120px;height:120px;
+  border-radius:50%;
+  pointer-events:none;z-index:0;
+  opacity:0.12;
+}
+.corner-tl{
+  top:-50px;left:-50px;
+  background:var(--orange);
+}
+.corner-br{
+  bottom:-50px;right:-50px;
+  background:var(--orange);
+}
+
+.container{
+  max-width:580px;
+  margin:0 auto;
+  padding:40px 20px 80px;
+  position:relative;z-index:1;
+}
+
+/* LOGO */
+.logo-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:36px;
+  animation:fadeDown 0.6s ease forwards;
+}
+
+.logo-icon{
+  margin-bottom:10px;
+}
+
+.logo-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;
+  letter-spacing:4px;
+  color:var(--white);
+  line-height:1;
+}
+
+.logo-sub{
+  font-size:9px;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--orange);
+  margin-top:4px;
+  font-weight:500;
+}
+
+.logo-divider{
+  width:48px;height:2px;
+  background:var(--orange);
+  margin-top:12px;
+  border-radius:2px;
+}
+
+/* PROGRESS */
+.progress-wrap{
+  margin-bottom:36px;
+  animation:fadeDown 0.6s 0.1s ease both;
+}
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.progress-label{
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  font-weight:500;
+}
+
+.progress-count{
+  font-size:10px;
+  letter-spacing:1px;
+  color:var(--orange);
+  font-weight:600;
+}
+
+.progress-bar{
+  height:2px;
+  background:var(--border);
+  border-radius:2px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--orange-dark), var(--orange));
+  border-radius:2px;
+  transition:width 0.6s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 8px rgba(249,115,22,0.4);
+}
+
+.progress-steps{
+  display:flex;gap:6px;margin-top:8px;
+}
+
+.step-pip{
+  flex:1;height:3px;
+  background:var(--border);
+  border-radius:2px;
+  transition:all 0.4s ease;
+}
+.step-pip.done{background:rgba(249,115,22,0.4);}
+.step-pip.active{background:var(--orange);box-shadow:0 0 6px rgba(249,115,22,0.5);}
+
+/* SCREENS */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp 0.45s ease forwards;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* INTRO */
+.intro-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  background:rgba(249,115,22,0.1);
+  border:1px solid rgba(249,115,22,0.25);
+  border-radius:2px;
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--orange);
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:24px;
+}
+
+.intro-badge::before{
+  content:'';
+  width:6px;height:6px;
+  background:var(--orange);
+  border-radius:50%;
+  animation:pulse 1.8s ease infinite;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.7)}
+}
+
+.intro-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(38px,8vw,58px);
+  letter-spacing:2px;
+  line-height:1.05;
+  color:var(--white);
+  margin-bottom:8px;
+}
+
+.intro-title span{color:var(--orange);}
+
+.intro-desc{
+  font-size:14px;
+  color:var(--text-muted);
+  line-height:1.7;
+  margin-bottom:32px;
+  font-weight:400;
+  max-width:440px;
+}
+
+.intro-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:32px;
+}
+
+.stat{
+  background:var(--black2);
+  padding:18px 16px;
+  text-align:center;
+}
+
+.stat-n{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;
+  color:var(--orange);
+  letter-spacing:1px;
+  line-height:1;
+  margin-bottom:4px;
+}
+
+.stat-l{
+  font-size:10px;
+  color:var(--text-muted);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-weight:500;
+}
+
+/* QUESTION */
+.q-step{
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--orange);
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.q-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(26px,5vw,36px);
+  letter-spacing:1.5px;
+  line-height:1.15;
+  color:var(--white);
+  margin-bottom:28px;
+}
+
+/* OPTIONS */
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:28px;
+}
+
+.option{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 20px;
+  background:var(--black2);
+  border:1px solid var(--border);
+  border-radius:3px;
+  cursor:pointer;
+  transition:all 0.22s ease;
+  text-align:left;
+  font-family:'Nunito',sans-serif;
+  color:var(--text);
+  font-size:14px;
+  font-weight:400;
+  position:relative;
+  overflow:hidden;
+}
+
+.option::after{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--orange);
+  transform:scaleY(0);
+  transition:transform 0.22s ease;
+  border-radius:0 2px 2px 0;
+}
+
+.option:hover{
+  border-color:rgba(249,115,22,0.4);
+  background:var(--black3);
+  color:var(--white);
+}
+
+.option.selected{
+  border-color:var(--orange);
+  background:rgba(249,115,22,0.07);
+  color:var(--white);
+}
+
+.option.selected::after{
+  transform:scaleY(1);
+}
+
+.opt-letter{
+  width:26px;height:26px;
+  min-width:26px;
+  border:1px solid var(--border);
+  border-radius:2px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:600;
+  color:var(--text-muted);
+  transition:all 0.22s;
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:1px;
+}
+
+.option:hover .opt-letter,
+.option.selected .opt-letter{
+  border-color:var(--orange);
+  color:var(--orange);
+  background:rgba(249,115,22,0.1);
+}
+
+.opt-check{
+  margin-left:auto;
+  width:18px;height:18px;
+  min-width:18px;
+  border:1px solid var(--border);
+  border-radius:50%;
+  transition:all 0.22s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.option.selected .opt-check{
+  background:var(--orange);
+  border-color:var(--orange);
+}
+
+.option.selected .opt-check::after{
+  content:'';
+  width:5px;height:5px;
+  background:var(--black);
+  border-radius:50%;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:16px;
+  background:var(--orange);
+  color:var(--black);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px;
+  letter-spacing:3px;
+  border:none;
+  border-radius:3px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  opacity:0;
+  transition:opacity 0.25s;
+}
+
+.btn:hover::before{opacity:1;}
+.btn:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,0.3);}
+.btn:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none;transform:none;box-shadow:none;}
+
+/* SUCCESS */
+.success-wrap{
+  text-align:center;
+  padding:16px 0;
+}
+
+.success-icon{
+  width:72px;height:72px;
+  margin:0 auto 24px;
+  background:rgba(249,115,22,0.1);
+  border:1px solid rgba(249,115,22,0.3);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards, glowPulse 2.5s 0.5s ease infinite;
+}
+
+@keyframes popIn{
+  from{transform:scale(0.5);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+@keyframes glowPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.3)}
+  50%{box-shadow:0 0 0 14px rgba(249,115,22,0)}
+}
+
+.success-tag{
+  display:inline-block;
+  padding:4px 14px;
+  background:rgba(249,115,22,0.1);
+  border:1px solid rgba(249,115,22,0.3);
+  border-radius:20px;
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--orange);
+  font-weight:600;
+  margin-bottom:16px;
+}
+
+.success-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,7vw,46px);
+  letter-spacing:2px;
+  color:var(--white);
+  line-height:1.1;
+  margin-bottom:10px;
+}
+
+.success-title span{color:var(--orange);}
+
+.success-sub{
+  font-size:13px;
+  color:var(--text-muted);
+  line-height:1.8;
+  margin-bottom:32px;
+  font-weight:400;
+}
+
+.summary-box{
+  background:var(--black2);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:20px;
+  margin-bottom:28px;
+  text-align:left;
+}
+
+.summary-title{
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:14px;
+  font-weight:600;
+}
+
+.summary-row{
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.summary-row:last-child{border-bottom:none;padding-bottom:0;}
+
+.summary-q{
+  font-size:10px;
+  color:var(--text-muted);
+  margin-bottom:3px;
+  font-weight:400;
+}
+
+.summary-a{
+  font-size:13px;
+  color:var(--orange2);
+  font-weight:600;
+}
+
+.wa-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+  padding:18px;
+  background:#25D366;
+  color:#fff;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:17px;
+  letter-spacing:3px;
+  text-decoration:none;
+  border-radius:3px;
+  transition:all 0.25s;
+  border:none;cursor:pointer;
+}
+
+.wa-btn:hover{
+  background:#1fba57;
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(37,211,102,0.25);
+}
+
+.wa-icon{font-size:22px;}
+
+/* REJECT */
+.reject-wrap{text-align:center;padding:16px 0;}
+
+.reject-icon{
+  font-size:36px;
+  margin-bottom:20px;
+  opacity:0.35;
+}
+
+.reject-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,6vw,40px);
+  letter-spacing:2px;
+  color:var(--text-muted);
+  margin-bottom:10px;
+  line-height:1.1;
+}
+
+.reject-msg{
+  font-size:13px;
+  color:var(--text-muted);
+  line-height:1.9;
+  max-width:400px;
+  margin:0 auto 28px;
+  font-weight:400;
+  padding:20px;
+  background:var(--black2);
+  border:1px solid var(--border);
+  border-radius:4px;
+  text-align:left;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 24px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  font-family:'Nunito',sans-serif;
+  font-size:12px;
+  letter-spacing:1px;
+  cursor:pointer;
+  border-radius:3px;
+  transition:all 0.2s;
+}
+.back-btn:hover{border-color:var(--orange);color:var(--orange);}
+
+/* FOOTER NOTE */
+.footer-note{
+  font-size:10px;
+  color:var(--text-muted);
+  text-align:center;
+  margin-top:20px;
+  letter-spacing:1px;
+  opacity:0.6;
+}
+
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:28px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="corner-tl"></div>
+<div class="corner-br"></div>
+
+<div class="container">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <!-- Logo SVG inspirado en Predios Urabá -->
+    <div class="logo-icon">
+      <svg width="56" height="52" viewBox="0 0 56 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Casa -->
+        <path d="M28 6L4 24H10V46H46V24H52L28 6Z" fill="#F97316" opacity="0.15"/>
+        <path d="M28 6L4 24H10V46H46V24H52L28 6Z" stroke="#F97316" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+        <!-- Ventana -->
+        <rect x="20" y="28" width="8" height="8" rx="1" fill="#F97316" opacity="0.6"/>
+        <rect x="30" y="28" width="8" height="8" rx="1" fill="#F97316" opacity="0.6"/>
+        <!-- Puerta -->
+        <rect x="23" y="36" width="10" height="10" rx="1" fill="#F97316"/>
+        <!-- Chimenea -->
+        <rect x="34" y="10" width="5" height="8" rx="1" fill="#F97316"/>
+      </svg>
+    </div>
+    <div class="logo-name">PREDIOS URABÁ</div>
+    <div class="logo-sub">Bienes Raíces</div>
+    <div class="logo-divider"></div>
+  </div>
+
+  <!-- PROGRESS (oculto en intro) -->
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-top">
+      <div class="progress-label">Evaluación de perfil</div>
+      <div class="progress-count" id="progressCount">1 / 4</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:25%"></div>
+    </div>
+    <div class="progress-steps">
+      <div class="step-pip active" id="pip0"></div>
+      <div class="step-pip" id="pip1"></div>
+      <div class="step-pip" id="pip2"></div>
+      <div class="step-pip" id="pip3"></div>
+    </div>
+  </div>
+
+  <!-- ===== INTRO ===== -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-badge">Acceso exclusivo</div>
+    <div class="intro-title">Encuentra tu<br><span>propiedad ideal</span><br>en el Urabá</div>
+    <p class="intro-desc">
+      Responde 4 preguntas rápidas y conecta directamente con un asesor especializado. 
+      Solo atendemos perfiles serios de compradores e inversionistas.
+    </p>
+    <div class="intro-stats">
+      <div class="stat">
+        <div class="stat-n">4</div>
+        <div class="stat-l">Preguntas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">2'</div>
+        <div class="stat-l">Minutos</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">100%</div>
+        <div class="stat-l">Gratis</div>
+      </div>
+    </div>
+    <button class="btn" onclick="startFunnel()">COMENZAR EVALUACIÓN →</button>
+    <p class="footer-note">* Solo acceden al WhatsApp los perfiles que cumplan los criterios.</p>
+  </div>
+
+  <!-- ===== PREGUNTA 1 ===== -->
+  <div class="screen" id="screen-q0">
+    <div class="q-step">Pregunta 01 / 04</div>
+    <div class="q-title">¿QUÉ ESTÁS BUSCANDO?</div>
+    <div class="options">
+      <button class="option" onclick="selectOpt(0,0,true)" id="o0-0">
+        <span class="opt-letter">A</span>
+        Invertir en finca raíz
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(0,1,true)" id="o0-1">
+        <span class="opt-letter">B</span>
+        Comprar para uso propio
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(0,2,false)" id="o0-2">
+        <span class="opt-letter">C</span>
+        Solo estoy mirando
+        <span class="opt-check"></span>
+      </button>
+    </div>
+    <button class="btn" id="btn-q0" disabled onclick="next(0)">CONTINUAR →</button>
+  </div>
+
+  <!-- ===== PREGUNTA 2 ===== -->
+  <div class="screen" id="screen-q1">
+    <div class="q-step">Pregunta 02 / 04</div>
+    <div class="q-title">¿CUÁNDO PLANEAS TOMAR LA DECISIÓN?</div>
+    <div class="options">
+      <button class="option" onclick="selectOpt(1,0,true)" id="o1-0">
+        <span class="opt-letter">A</span>
+        Lo antes posible
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(1,1,true)" id="o1-1">
+        <span class="opt-letter">B</span>
+        En 1 a 3 meses
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(1,2,false)" id="o1-2">
+        <span class="opt-letter">C</span>
+        Más adelante, sin fecha clara
+        <span class="opt-check"></span>
+      </button>
+    </div>
+    <button class="btn" id="btn-q1" disabled onclick="next(1)">CONTINUAR →</button>
+  </div>
+
+  <!-- ===== PREGUNTA 3 ===== -->
+  <div class="screen" id="screen-q2">
+    <div class="q-step">Pregunta 03 / 04</div>
+    <div class="q-title">¿QUÉ TIPO DE PROPIEDAD TE INTERESA?</div>
+    <div class="options">
+      <button class="option" onclick="selectOpt(2,0,true)" id="o2-0">
+        <span class="opt-letter">A</span>
+        Lotes en zonas de valorización
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(2,1,true)" id="o2-1">
+        <span class="opt-letter">B</span>
+        Proyectos en desarrollo
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(2,2,true)" id="o2-2">
+        <span class="opt-letter">C</span>
+        Propiedad lista para entregar
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(2,3,false)" id="o2-3">
+        <span class="opt-letter">D</span>
+        No sé aún
+        <span class="opt-check"></span>
+      </button>
+    </div>
+    <button class="btn" id="btn-q2" disabled onclick="next(2)">CONTINUAR →</button>
+  </div>
+
+  <!-- ===== PREGUNTA 4 ===== -->
+  <div class="screen" id="screen-q3">
+    <div class="q-step">Pregunta 04 / 04</div>
+    <div class="q-title">¿CUÁL ES TU PRESUPUESTO DISPONIBLE?</div>
+    <div class="options">
+      <button class="option" onclick="selectOpt(3,0,false)" id="o3-0">
+        <span class="opt-letter">A</span>
+        Menos de $100M COP
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(3,1,true)" id="o3-1">
+        <span class="opt-letter">B</span>
+        Entre $150M y $300M COP
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(3,2,true)" id="o3-2">
+        <span class="opt-letter">C</span>
+        Entre $300M y $500M COP
+        <span class="opt-check"></span>
+      </button>
+      <button class="option" onclick="selectOpt(3,3,true)" id="o3-3">
+        <span class="opt-letter">D</span>
+        Entre $500M y $1.000M COP
+        <span class="opt-check"></span>
+      </button>
+    </div>
+    <button class="btn" id="btn-q3" disabled onclick="evaluate()">VER RESULTADO →</button>
+  </div>
+
+  <!-- ===== ÉXITO ===== -->
+  <div class="screen" id="screen-success">
+    <div class="success-wrap">
+      <div class="success-icon">🏡</div>
+      <div class="success-tag">Perfil Verificado</div>
+      <div class="success-title">TIENES ACCESO AL<br><span>PORTAFOLIO</span></div>
+      <p class="success-sub">
+        Tu perfil cumple los criterios de atención.<br>
+        Un asesor de Predios Urabá te contactará<br>directamente por WhatsApp.
+      </p>
+      <div class="summary-box">
+        <div class="summary-title">Resumen de tu evaluación</div>
+        <div id="summary-content"></div>
+      </div>
+      <a class="wa-btn" id="wa-link" href="#" target="_blank">
+        <span class="wa-icon">💬</span>
+        HABLAR CON UN ASESOR AHORA
+      </a>
+      <p class="footer-note" style="margin-top:14px">Un asesor te atenderá en menos de 2 horas hábiles.</p>
+    </div>
+  </div>
+
+  <!-- ===== DESCARTE ===== -->
+  <div class="screen" id="screen-reject">
+    <div class="reject-wrap">
+      <div class="reject-icon">◇</div>
+      <div class="reject-title">GRACIAS POR<br>TU INTERÉS</div>
+      <div class="reject-msg">
+        En este momento nuestro portafolio está diseñado para un perfil específico de comprador o inversionista.<br><br>
+        Hemos registrado tu información y te contactaremos cuando tengamos oportunidades que se ajusten mejor a tu momento actual.
+      </div>
+      <button class="back-btn" onclick="reset()">← Volver al inicio</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ======= CONFIG =======
+const WA_NUMBER = '573202102110';
+const WA_MSG = 'Hola, completé la evaluación en el sitio web de Predios Urabá y me gustaría conocer el portafolio disponible.';
+
+// ======= STATE =======
+const answers = [null, null, null, null];
+const qualifies = [null, null, null, null];
+const labels = [
+  '¿Qué estás buscando?',
+  '¿Cuándo planeas decidir?',
+  '¿Qué tipo de propiedad?',
+  '¿Cuál es tu presupuesto?'
+];
+
+// ======= HELPERS =======
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function startFunnel() {
+  document.getElementById('progressWrap').style.display = 'block';
+  updateProgress(0);
+  show('screen-q0');
+}
+
+function updateProgress(step) {
+  const pct = ((step + 1) / 4) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = (step + 1) + ' / 4';
+  for (let i = 0; i < 4; i++) {
+    const pip = document.getElementById('pip' + i);
+    pip.className = 'step-pip';
+    if (i < step) pip.classList.add('done');
+    else if (i === step) pip.classList.add('active');
+  }
+}
+
+function selectOpt(q, opt, isOk) {
+  document.querySelectorAll(`[id^="o${q}-"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`o${q}-${opt}`).classList.add('selected');
+  answers[q] = document.getElementById(`o${q}-${opt}`).textContent.trim().replace(/[A-D]/, '').trim();
+  qualifies[q] = isOk;
+  document.getElementById(`btn-q${q}`).disabled = false;
+}
+
+function next(current) {
+  if (answers[current] === null) return;
+  if (!qualifies[current]) { showReject(); return; }
+  const nextStep = current + 1;
+  updateProgress(nextStep);
+  show(`screen-q${nextStep}`);
+}
+
+function evaluate() {
+  if (answers[3] === null) return;
+  if (!qualifies[3]) { showReject(); return; }
+
+  // Build summary
+  const html = answers.map((a, i) => `
+    <div class="summary-row">
+      <div class="summary-q">${labels[i]}</div>
+      <div class="summary-a">${a}</div>
+    </div>
+  `).join('');
+  document.getElementById('summary-content').innerHTML = html;
+
+  // WhatsApp link
+  document.getElementById('wa-link').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
+
+  document.getElementById('progressWrap').style.display = 'none';
+  show('screen-success');
+}
+
+function showReject() {
+  document.getElementById('progressWrap').style.display = 'none';
+  show('screen-reject');
+}
+
+function reset() {
+  answers.fill(null);
+  qualifies.fill(null);
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.btn').forEach(b => { if (b.id && b.id.startsWith('btn-q')) b.disabled = true; });
+  document.getElementById('progressWrap').style.display = 'none';
+  show('screen-intro');
+}
+</script>
+</body>
+</html>
